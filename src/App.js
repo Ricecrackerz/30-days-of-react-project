@@ -1,41 +1,55 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
+import axios from 'axios'
+
+const Cat = ({cat: {name}}) => {
+  return(
+    <p>
+      {name}
+    </p>
+  )
+}
 
 class App extends Component {
-  constructor(props) {
-    super(props)
-    console.log('I am  the constructor and  I will be the first to run.')
-    this.state = {
-      firstName: 'John',
-      day: 1,
+  state = {
+    data: [],
+  }
+
+  componentDidMount(){
+    this.fetchCatData()
+  }
+
+  fetchCatData =  async () => {
+    const URL = 'https://api.thecatapi.com/v1/breeds'
+    try {
+      const response = await axios.get(URL)
+      const fetchData = await response.data
+      this.setState({data: fetchData})
+    }catch(e){
+      console.log(e)
     }
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    console.log(nextProps, nextState)
-    console.log(nextState.day)
-    if (nextState.day > 31) {
-      return false
-    } else {
-      return true
-    }
-  }
-  // the doChallenge increment the day by one
-  doChallenge = () => {
-    this.setState({
-      day: this.state.day + 1,
-    })
-  }
-  render() {
-    return (
-      <div className='App'>
-        <h1>React Component Life Cycle</h1>
-        <button onClick={this.doChallenge}>Do Challenge</button>
-        <p>Challenge: Day {this.state.day}</p>
-        {this.state.congratulate && <h2>{this.state.congratulate}</h2>}
+  render()  {
+    return(
+      <div className = 'App'>
+        <h1>
+          30 Days of React
+        </h1>
+        <h2>
+          Cats Paradise
+        </h2>
+        <p>
+          There are {this.state.data.length} cat breeds
+        </p>
+        <div>
+          {this.state.data.map((cat) => (
+            <Cat cat={cat}/>
+          ))}
+        </div>
       </div>
     )
   }
 }
+
 
 export default App
